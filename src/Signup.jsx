@@ -12,11 +12,27 @@ const Signup = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Signup Data:", formData);
-    // TODO: Send data to backend or Firebase
-    alert("Account created successfully!");
+
+    try {
+      const res = await fetch("http://localhost:5000/api/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        alert(data.message);
+        setFormData({ name: "", email: "", password: "" }); // clear form
+      } else {
+        alert(data.message || "Signup failed");
+      }
+    } catch (err) {
+      console.error("Error:", err);
+      alert("Something went wrong");
+    }
   };
 
   return (
