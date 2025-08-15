@@ -1,20 +1,24 @@
 version: '3.8'
 
 services:
-  frontend:
-    build:
-      context: ./   # basic folder ke andar hi frontend code hai
-    ports:
-      - "5173:5173"
-    depends_on:
-      - backend
-    environment:
-      VITE_API_URL: http://backend:5000
-
   backend:
     build:
       context: ./backend
+      dockerfile: Dockerfile
     ports:
       - "5000:5000"
     env_file:
       - ./backend/.env
+    container_name: nexus-backend
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    container_name: nexus-frontend
+    restart: unless-stopped

@@ -16,7 +16,8 @@ const Signup = () => {
     e.preventDefault();
 
     try {
-      const res = await fetch("http://44.222.62.82:5000/api/auth/signup", {
+      const apiBaseUrl = import.meta.env.VITE_API_URL;
+      const res = await fetch(`${apiBaseUrl}/api/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -25,7 +26,7 @@ const Signup = () => {
       const data = await res.json();
       if (res.ok) {
         alert(data.message);
-        setFormData({ name: "", email: "", password: "" }); // clear form
+        setFormData({ name: "", email: "", password: "" });
       } else {
         alert(data.message || "Signup failed");
       }

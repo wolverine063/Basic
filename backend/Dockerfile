@@ -1,20 +1,35 @@
-# Step 1: Base image
-FROM node:18
+# -------- Step 1: Build the frontend --------
+FROM node:18 AS builder
 
-# Step 2: Set working directory inside container
+# Set working directory
 WORKDIR /app
 
-# Step 3: Copy package.json and package-lock.json first (for caching)
+# Copy package.json and lock file
 COPY package*.json ./
 
-# Step 4: Install dependencies
+# Install frontend dependencies
 RUN npm install
 
-# Step 5: Copy backend source code
+# Copy frontend source code
 COPY . .
 
-# Step 6: Expose backend port (change if needed)
-EXPOSE 5000
+# Build the Vite app with correct environment variable
+RUN npm run build
 
-# Step 7: Start backend
-CMD ["npm", "start"]
+
+# -------- Step 2: Serve with a lightweight web server --------
+FROM nginx:stable-alpine
+
+# Remove default nginx static files
+RUN rm -rf /usr/share/nginx/html/*
+
+# Copy built frontend from builder stage
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+# Copy custom nginx config (optional)
+# COPY nginx.conf /etc/nginx/nginx.conf
+
+# Expose Vite's production port (usually 80)
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

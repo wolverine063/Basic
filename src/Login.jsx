@@ -8,7 +8,9 @@ const Login = () => {
     const password = e.target[1].value;
 
     try {
-      const res = await fetch("http://44.222.62.82:5000/api/auth/login", {
+      const apiBaseUrl = import.meta.env.VITE_API_URL;
+
+      const res = await fetch(`${apiBaseUrl}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -17,13 +19,11 @@ const Login = () => {
       const data = await res.json();
 
       if (res.ok) {
-        // Save JWT token
         localStorage.setItem("token", data.token);
         alert("Login successful!");
-        
-        // Redirect or update UI here
+        // Redirect or update UI
       } else {
-        alert(data.message);
+        alert(data.message || "Login failed.");
       }
     } catch (err) {
       console.error("Login Error:", err);
