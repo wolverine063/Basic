@@ -17,7 +17,13 @@ const Signup = () => {
 
     try {
       const apiBaseUrl = import.meta.env.VITE_API_URL;
-      const res = await fetch(`${apiBaseUrl}/api/auth/signup`, {
+
+      // Trailing slash hatao agar ho to
+      const cleanApiBaseUrl = apiBaseUrl.endsWith('/')
+        ? apiBaseUrl.slice(0, -1)
+        : apiBaseUrl;
+
+      const res = await fetch(`${cleanApiBaseUrl}/api/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
