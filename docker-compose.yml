@@ -9,7 +9,7 @@ services:
     depends_on:
       - backend
     environment:
-      VITE_API_URL: ${VITE_API_URL}
+      VITE_API_URL: ${VITE_API_URL}   # runtime me Jenkinsfile se pass hoga
 
   backend:
     build:
@@ -17,4 +17,4 @@ services:
     ports:
       - "5000:5000"
     env_file:
-      - ./backend/.env
+      - ./backend/.env             # Jenkinsfile se dynamically create hoga
