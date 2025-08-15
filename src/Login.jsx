@@ -1,6 +1,36 @@
 import React from "react";
 
 const Login = () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const email = e.target[0].value;
+    const password = e.target[1].value;
+
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        // Save JWT token
+        localStorage.setItem("token", data.token);
+        alert("Login successful!");
+        
+        // Redirect or update UI here
+      } else {
+        alert(data.message);
+      }
+    } catch (err) {
+      console.error("Login Error:", err);
+      alert("Something went wrong. Please try again.");
+    }
+  };
+
   return (
     <div
       style={{
@@ -14,7 +44,6 @@ const Login = () => {
         padding: "1rem",
       }}
     >
-      {/* Optional: Add your AnimatedBackground component here */}
       <div
         style={{
           position: "relative",
@@ -41,7 +70,10 @@ const Login = () => {
           Login to Nexus
         </h2>
 
-        <form style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+        <form
+          style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
+          onSubmit={handleSubmit}
+        >
           <input
             type="email"
             placeholder="Email address"

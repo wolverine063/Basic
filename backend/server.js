@@ -2,8 +2,6 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
-import bcrypt from "bcryptjs";
-import User from "./models/User.js";
 
 dotenv.config();
 const app = express();
@@ -20,30 +18,9 @@ mongoose.connect(process.env.MONGO_URI, {
   .catch((err) => console.error("❌ DB connection error:", err));
 
 // Routes
-app.post("/api/signup", async (req, res) => {
-  try {
-    const { name, email, password } = req.body;
-
-    // Check if user exists
-    const userExists = await User.findOne({ email });
-    if (userExists) return res.status(400).json({ message: "Email already registered" });
-
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Create user
-    const newUser = new User({ name, email, password: hashedPassword });
-    await newUser.save();
-
-    res.status(201).json({ message: "User registered successfully" });
-
-  } catch (err) {
-    console.error("Signup Error:", err);
-    res.status(500).json({ message: "Server error" });
-  }
-});
+import authRoutes from "./routes/auth.js";
+app.use("/api/auth", authRoutes);
 
 // Start Server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, "0.0.0.0", () => console.log(`Server running on port ${PORT}`));
-
