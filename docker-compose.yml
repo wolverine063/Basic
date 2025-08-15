@@ -3,13 +3,13 @@ version: '3.8'
 services:
   frontend:
     build:
-      context: ./
+      context: ./frontend
     ports:
       - "5173:5173"
     depends_on:
       - backend
     environment:
-      VITE_API_URL: ${VITE_API_URL}   # runtime me Jenkinsfile se pass hoga
+      - VITE_API_URL=http://backend:5000  # docker network ke through backend call
 
   backend:
     build:
@@ -17,4 +17,4 @@ services:
     ports:
       - "5000:5000"
     env_file:
-      - ./backend/.env             # Jenkinsfile se dynamically create hoga
+      - ./backend/.env
