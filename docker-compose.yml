@@ -3,13 +3,13 @@ version: '3.8'
 services:
   frontend:
     build:
-      context: ./frontend
+      context: ./   # basic folder ke andar hi frontend code hai
     ports:
       - "5173:5173"
     depends_on:
       - backend
     environment:
-      - VITE_API_URL=http://backend:5000  # docker network ke through backend call
+      VITE_API_URL: http://backend:5000
 
   backend:
     build:
